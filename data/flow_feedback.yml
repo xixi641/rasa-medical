@@ -1,0 +1,8 @@
+flows:
+  feedback:
+    name: 建议或系统故障反馈
+    description: 建议或系统故障反馈
+    steps:
+      - call: user_exist_check # 检查用户是否存在
+      - collect: feedback_content # 获取反馈内容
+      - action: action_receive_feedback # 收到反馈信息

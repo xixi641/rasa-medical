@@ -1,0 +1,6 @@
+flows:
+  pattern_search:
+    description: 处理基于知识的查询和请求
+    name: pattern search
+    steps:
+      - action: action_trigger_search

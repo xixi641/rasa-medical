@@ -1,0 +1,27 @@
+{
+  "priority": 6,
+  "vector_store": {
+    "type": "addons.information_retrieval.GraphRAG",
+    "source": "./docs",
+    "threshold": 0.0
+  },
+  "llm": {
+    "id": "generate_models",
+    "models": [
+      {
+        "model": "qwen3.6-flash-2026-04-16",
+        "api_base": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key": "${TONGYI_API_KEY}"
+      }
+    ]
+  },
+  "embeddings": {
+    "id": "embedding_models",
+    "models": [
+      {
+        "model": "base-zh-v1.5",
+        "api_base": "http://localhost:10010"
+      }
+    ]
+  }
+}

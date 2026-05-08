@@ -1,0 +1,69 @@
+flows:
+  examination_booking:
+    name: 检查预约
+    description: 检查预约
+    steps:
+      - call: user_exist_check # 检查用户是否存在
+      - collect: examination_id # 获取检查项目id
+        next:
+          - if: slots.examination_id != "" # 如果检查项目id不为空
+            then: get_examination_date # 获取检查日期
+          - else:
+              - action: utter_no_usable_examination # 暂无可预约的检查
+                next: END
+      - id: get_examination_date
+        collect: examination_date # 获取检查日期
+        next:
+          - if: slots.examination_date != "" # 如果检查日期不为空
+            then: get_examination_shift # 获取检查班次id
+          - else:
+              - action: utter_no_usable_examination # 暂无可预约的检查
+                next: END
+      - id: get_examination_shift
+        collect: examination_shift_id # 获取检查班次id
+        next:
+          - if: slots.examination_shift_id != "" # 如果班次id不为空
+            then: step_confirm_examination_booking # 确认预约
+          - else:
+              - action: utter_no_usable_examination # 暂无可预约的检查
+                next: END
+      - id: step_confirm_examination_booking
+        collect: confirm_examination_booking # 确认预约
+        next:
+          - if: slots.confirm_examination_booking # 如果确认
+            then:
+              - action: action_initiate_payment # 发起支付
+              - action: action_check_payment_status # 确认支付状态
+                next:
+                  - if: slots.payed # 如果支付成功
+                    then:
+                      - action: action_add_examination_booking # 添加检查预约
+                        next: END
+                  - else:
+                      - action: utter_cancel_operation # 取消操作
+                        next: END
+          - else:
+              - action: utter_cancel_operation # 取消操作
+                next: END
+
+  examination_booking_query:
+    name: 查看检查预约
+    description: 查看已预约的检查
+    steps:
+      - call: user_exist_check # 检查用户是否存在
+      - action: action_query_examination_booking # 查看检查预约
+
+  examination_report_query:
+    name: 查看检查报告
+    description: 查看检查报告
+    steps:
+      - call: user_exist_check # 检查用户是否存在
+      - collect: examination_report_id # 获取检查报告id
+        next:
+          - if: slots.examination_report_id != "" # 如果检查报告id不为空
+            then: get_examination_report # 获取检查报告
+          - else:
+              - action: utter_no_examination_report # 暂无检查报告
+                next: END
+      - id: get_examination_report
+        action: action_query_examination_report # 查看检查报告

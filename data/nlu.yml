@@ -1,0 +1,54 @@
+version: "3.1"
+
+nlu:
+  - intent: greet
+    examples: |
+      - 你好
+      - 您好
+      - hello
+      - hi
+
+  - intent: switch_user
+    examples: |
+      - 切换账号
+      - 切换用户
+      - 换个ID
+      - 更换用户
+      - 我想换个号
+
+  - intent: request_appointment
+    examples: |
+      - 挂号
+      - 预约挂号
+      - 我想挂个号
+      - 帮我约个医生
+      - 我要看病
+
+  - intent: request_examination
+    examples: |
+      - 检查
+      - 预约检查
+      - 做个B超
+      - 查一下血常规
+      - 我要做检查
+
+  - intent: request_emr
+    examples: |
+      - 病历
+      - 查看病历
+      - 我的诊断记录
+      - 电子病历
+
+  - intent: request_inpatient
+    examples: |
+      - 住院
+      - 办理住院
+      - 查看住院信息
+      - 我的床位在哪
+
+  - intent: feedback
+    examples: |
+      - 反馈
+      - 我要投诉
+      - 提个建议
+      - 系统有问题

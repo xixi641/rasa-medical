@@ -1,0 +1,23 @@
+flows:
+  switch_user_id: # 测试用功能：切换用户ID
+    name: 切换账号
+    description: 切换账号
+    persisted_slots: # 流程结束后不重置下列槽
+      - user_id
+    steps:
+      - collect: user_id
+        description: 用户id
+
+  user_exist_check:
+    name: 检查用户是否存在
+    description: 检查用户是否存在
+    if: False # 流程守护，仅能被其他流程调用，无法直接触发
+    steps:
+      - action: action_user_check # 检查用户是否存在
+        next:
+          - if: not slots.user_id # 如果不用户存在
+            then:
+              - action: utter_user_not_exist # 提示用户不存在
+              - action: action_cancel_flow # 取消流程
+                next: END
+          - else: END # 如果用户存在，继续

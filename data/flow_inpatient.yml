@@ -1,0 +1,14 @@
+flows:
+  inpatient_booking_query:
+    name: 住院预约查询
+    description: 住院预约信息查询
+    steps:
+      - call: user_exist_check # 检查用户是否存在
+      - action: action_query_inpatient_booking # 查看住院预约
+
+  inpatient_query:
+    name: 住院信息查询
+    description: 住院信息查询
+    steps:
+      - call: user_exist_check # 检查用户是否存在
+      - action: action_query_inpatient # 查看住院信息

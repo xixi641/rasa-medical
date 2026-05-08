@@ -1,0 +1,145 @@
+version: "3.1"
+
+intents:
+  - greet
+  - switch_user
+  - request_appointment
+  - request_examination
+  - request_emr
+  - request_inpatient
+  - feedback
+
+
+slots:
+  user_id: # 用户id
+    type: text
+    initial_value: "100" # 设置初始值
+    mappings:
+      - type: from_llm
+
+  payment_id: # 支付id
+    type: text
+
+  payed: # 是否成功支付
+    type: bool
+
+  # --------------- 挂号 ---------------
+  department_level1_id: # 一级科室id
+    type: text
+
+  department_level2_id: # 二级科室id
+    type: text
+
+  appointment_shift_id: # 挂号班次id
+    type: text
+
+  valid_appointment_shift: # 验证挂号班次是否有效
+    type: bool
+
+  confirm_appointment: # 确认挂号预约
+    type: bool
+
+  # --------------- 检查 ---------------
+  examination_id: # 检查项目id
+    type: text
+
+  examination_date: # 检查日期
+    type: text
+
+  examination_shift_id: # 检查班次id
+    type: text
+
+  confirm_examination_booking: # 确认检查预约
+    type: bool
+
+  examination_report_id: # 检查报告id
+    type: text
+
+  # --------------- 病历 ---------------
+  emr_id: # 病历id
+    type: text
+
+  # --------------- 反馈 ---------------
+  feedback_content: # 反馈内容
+    type: text
+
+responses:
+  utter_ask_user_id: # 询问要切换的用户ID
+    - text: "请输入 user_id"
+
+  utter_user_not_exist: # 用户不存在
+    - text: "您尚未注册，无法进行该操作，请先注册"
+
+  utter_payment_cancel: # 支付取消
+    - text: "支付未成功"
+
+  utter_cancel_operation: # 取消操作
+    - text: "操作已取消"
+
+  # --------------- 挂号 ---------------
+  utter_no_usable_appointment: # 没有可预约的挂号
+    - text: "暂无可预约的挂号"
+
+  utter_ask_confirm_appointment: # 确认挂号预约
+    - text: "是否确认挂号？"
+      buttons:
+        - title: "确定"
+          payload: "true"
+        - title: "取消"
+          payload: "false"
+
+  # --------------- 检查 ---------------
+  utter_no_usable_examination: # 没有可预约的检查
+    - text: "暂无可预约的检查"
+
+  utter_ask_confirm_examination_booking: # 确认预约检查
+    - text: "是否确认预约检查？"
+      buttons:
+        - title: "确定"
+          payload: "true"
+        - title: "取消"
+          payload: "false"
+
+  utter_no_examination_report: # 没有检查报告
+    - text: "暂无检查报告"
+
+  # --------------- 病历 ---------------
+  utter_no_emr: # 暂无病历
+    - text: "暂无病历"
+
+  # --------------- 反馈 ---------------
+  utter_ask_feedback_content: # 询问反馈内容
+    - text: "欢迎反馈，请输入您要反馈的内容(‾◡◝)"
+
+actions:
+  - action_user_check # 检查用户是否存在
+  - action_initiate_payment # 发起支付
+  - action_check_payment_status # 检查支付状态
+
+  # --------------- 挂号 ---------------
+  - action_ask_department_level1_id # 获取一级科室id
+  - action_ask_department_level2_id # 获取二级科室id
+  - action_ask_appointment_shift_id # 获取挂号班次id
+  - action_valid_appointment_shift # 验证挂号班次
+  - action_add_appointment # 添加挂号预约
+  - action_query_appointment # 查询已预约的挂号
+
+  # --------------- 检查 ---------------
+  - action_ask_examination_id # 获取检查项目id
+  - action_ask_examination_date # 获取检查日期
+  - action_ask_examination_shift_id # 获取检查班次id
+  - action_add_examination_booking # 添加检查预约
+  - action_query_examination_booking # 查询已预约的检查
+  - action_ask_examination_report_id # 获取检查报告id
+  - action_query_examination_report # 查询检查报告
+
+  # --------------- 住院 ---------------
+  - action_query_inpatient_booking # 查看住院预约
+  - action_query_inpatient # 查看住院信息
+
+  # --------------- 病历 ---------------
+  - action_ask_emr_id # 获取病历id
+  - action_query_emr # 查看病历信息
+
+  # --------------- 反馈 ---------------
+  - action_receive_feedback # 接收反馈

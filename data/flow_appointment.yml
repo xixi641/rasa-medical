@@ -1,0 +1,61 @@
+flows:
+  appointment:
+    name: 挂号预约
+    description: 挂号预约
+    steps:
+      - call: user_exist_check # 检查用户是否存在
+      - collect: department_level1_id # 获取一级科室id
+        next:
+          - if: slots.department_level1_id != "" # 如果一级科室id不为空
+            then: get_department_level2 # 获取二级科室id
+          - else:
+              - action: utter_no_usable_appointment # 暂无可预约的挂号
+                next: END
+      - id: get_department_level2
+        collect: department_level2_id # 获取二级科室id
+        next:
+          - if: slots.department_level2_id != "" # 如果二级科室id不为空
+            then: get_appointment_shift # 获取挂号班次id
+          - else:
+              - action: utter_no_usable_appointment # 暂无可预约的挂号
+                next: END
+      - id: get_appointment_shift
+        collect: appointment_shift_id # 获取挂号班次id
+        next:
+          - if: slots.appointment_shift_id != "" # 如果挂号班次id不为空
+            then: step_valid_appointment_shift # 验证挂号班次
+          - else:
+              - action: utter_no_usable_appointment # 暂无可预约的挂号
+                next: END
+      - id: step_valid_appointment_shift
+        action: action_valid_appointment_shift # 验证挂号班次
+        next:
+          - if: slots.valid_appointment_shift # 如果有效
+            then: step_confirm_appointment # 确认预约
+          - else: END
+      - id: step_confirm_appointment
+        collect: confirm_appointment # 确认预约
+        next:
+          - if: slots.confirm_appointment # 如果确认
+            then:
+              - action: action_initiate_payment # 发起支付
+              - action: action_check_payment_status # 确认支付状态
+                next:
+                  - if: slots.payed # 如果支付成功
+                    then:
+                      - action: action_add_appointment # 添加挂号预约
+                        next: END
+                  - else:
+                      - action: utter_cancel_operation # 取消操作
+                        next: END
+          - else:
+              - action: utter_cancel_operation # 取消操作
+                next: END
+
+  appointment_query:
+    name: 查看挂号预约
+    description: 查看已预约的挂号信息
+    steps:
+      - call: user_exist_check # 检查用户是否存在
+      - action: action_query_appointment # 查看挂号
+

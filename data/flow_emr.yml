@@ -1,0 +1,16 @@
+flows:
+  emr_query:
+    name: 病历信息查询
+    description: 病历信息查询
+    steps:
+      - call: user_exist_check # 检查用户是否存在
+      - collect: emr_id # 获取病历id
+        next:
+          - if: slots.emr_id != "" # 如果病历id不为空
+            then: get_emr # 获取病历
+          - else:
+              - action: utter_no_emr # 暂无病历
+                next: END
+      - id: get_emr
+        action: action_query_emr # 查询病历
+

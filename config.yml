@@ -1,0 +1,20 @@
+recipe: default.v1
+language: zh
+assistant_id: dingzhensi_medical
+
+pipeline:
+  - name: SearchReadyLLMCommandGenerator
+    llm:
+      model_group: generate_models
+    flow_retrieval:
+      active: false
+
+policies:
+  - name: FlowPolicy
+  - name: EnterpriseSearchPolicy
+    llm:
+      model_group: generate_models
+    embeddings:
+      model_group: embedding_models
+    vector_store:
+      type: "addons.information_retrieval.GraphRAG"
